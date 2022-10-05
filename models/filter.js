@@ -5,18 +5,15 @@ const User = require("./User");
 
 const filterSchema = new mongoose.Schema(
   {
-    api_getdata: {
-      type: String,
-    },
-    key: {
+    keyEN: {
       require: true,
       type: String,
+    },
+    keyVI: {
+      require: true,
+      type: String
     },
     control_type: {
-      require: true,
-      type: String,
-    },
-    label: {
       require: true,
       type: String,
     },
@@ -28,11 +25,9 @@ const filterSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "subCategory",
     },
-    default_value: {
-      type: String,
-    },
     droplist_value_option: {
       type: String,
+      required: true
     },
     width: {
       type: Number,
@@ -42,4 +37,5 @@ const filterSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("filter", filterSchema);
+module.exports = mongoose.model("Filter", filterSchema);
+

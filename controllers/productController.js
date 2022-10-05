@@ -13,8 +13,8 @@ const sharp = require("sharp");
 const {
   Category,
   subCategory,
-  multiSubcategory,
-  productName,
+  brand,
+  itemModel,
   userTest,
 } = require("./../models/product");
 const { removeVietnameseTones } = require("../helper");
@@ -32,12 +32,15 @@ const productController = {
           message: "this category name is exists",
         });
       }
-      const stringUrl = removeVietnameseTones(req.body.title).toLowerCase().split(' ').join('-')
+      const stringUrl = removeVietnameseTones(req.body.title)
+        .toLowerCase()
+        .split(" ")
+        .join("-");
       const file = req.file.path;
       const newPost = await new Category({
         title: req.body.title,
         image: file,
-        param_url: `mua-ban-${stringUrl}` 
+        param_url: `mua-ban-${stringUrl}`,
         // param_url: removeVietnameseTones(req.body.title)
       });
       await newPost.save();
@@ -73,7 +76,10 @@ const productController = {
   },
   createNewProductByCategory: async (req, res) => {
     try {
-      const stringUrl = removeVietnameseTones(req.body.title).toLowerCase().split(' ').join('-')
+      const stringUrl = removeVietnameseTones(req.body.title)
+        .toLowerCase()
+        .split(" ")
+        .join("-");
       const newSubCategory = await new subCategory({
         title: req.body.title,
         param_url: `mua-ban-${stringUrl}`,
@@ -89,16 +95,18 @@ const productController = {
       return handleError(err);
     }
   },
-  createNewMultisubCategory: async (req, res) => {
+  createNewBrand: async (req, res) => {
     try {
-      const stringUrl = removeVietnameseTones(req.body.title).toLowerCase().split(' ').join('-')
-      const newMultiSubcategory = await new multiSubcategory({
+      const brand_id = await brand.count({});
+      const newMultiSubcategory = await new brand({
+        brand_id: brand_id + 1,
         title: req.body.title,
         category_id: req.body.category_id,
         subcategory_id: req.body.subcategory_id,
-        param_url: stringUrl
+        param_url: `bi${brand_id + 1}`,
       });
       await newMultiSubcategory.save();
+
       return handleSuccess(
         res,
         newMultiSubcategory,
@@ -122,7 +130,9 @@ const productController = {
   },
   getAllSubCategory: async (req, res) => {
     try {
-      const listCategories = await subCategory.find().populate("multiSubcategory");
+      const listCategories = await subCategory
+        .find()
+        .populate("multiSubcategory");
       return handleSuccess(
         res,
         listCategories,
@@ -132,12 +142,12 @@ const productController = {
       return handleError(err);
     }
   },
-  getMultisubsById: async (req, res) => {
+  getBrandsByMultisub: async (req, res) => {
     try {
       const { sub_id } = req.body;
-      const listMultisubById = await multiSubcategory.find({
+      const listMultisubById = await brand.find({
         subcategory_id: sub_id,
-      });
+      }).populate('models').exec();
       return handleSuccess(
         res,
         listMultisubById,
@@ -148,14 +158,17 @@ const productController = {
     }
   },
 
-  createProduct: async (req, res) => {
+  createModel: async (req, res) => {
     try {
-      const stringUrl = removeVietnameseTones(req.body.title).toLowerCase().split(' ').join('-')
-      const { title, multisub_id } = req.body;
-      const newProduct = await new productName({
+      const modelCount = await itemModel.count({});
+      const { title, brand_id, category_id, subcategory_id } = req.body;
+      const newProduct = await new itemModel({
+        model_id: modelCount + 1,
         title: title,
-        multisub_id: multisub_id,
-        param_url: stringUrl
+        brand_id: brand_id,
+        category_id: category_id,
+        subcategory_id: subcategory_id,
+        param_url: `mi${modelCount + 1}`,
       });
       await newProduct.save();
       return handleSuccess(res, newProduct, "Create new product successfully!");
@@ -163,19 +176,19 @@ const productController = {
       return handleError(err);
     }
   },
-  insertProductToMultisub: async (req, res) => {
+  insertModelToBrands: async (req, res) => {
     try {
-      const { product_id, multisub_id } = req.body;
-      const multisubFound = await multiSubcategory.findById(multisub_id);
-      const filterProducts = await product_id.filter((item) => {
-        return multisubFound._doc.products.indexOf(item) < 0;
+      const { model_id, brand_id } = req.body;
+      const brandFound = await brand.findOne({ brand_id: brand_id });
+      const filterModels = await model_id.filter((item) => {
+        return brandFound._doc.models.indexOf(item) < 0;
       });
       const [err, result] = await to(
-        multiSubcategory.updateOne(
-          { _id: multisub_id },
+        brand.updateOne(
+          { brand_id: brand_id },
           {
             $set: {
-              products: multisubFound.products.concat(filterProducts),
+              models: brandFound.models.concat(filterModels),
             },
           }
         )
@@ -188,9 +201,9 @@ const productController = {
       return handleError(err);
     }
   },
-  getAllMultisub: async (req, res) => {
+  getAllBrands: async (req, res) => {
     try {
-      const listCategories = await multiSubcategory.find().populate("products");
+      const listCategories = await brand.find().populate("models").exec();
       return handleSuccess(
         res,
         listCategories,
@@ -201,23 +214,23 @@ const productController = {
     }
   },
 
-
   createAllItemFake: async (req, res) => {
     try {
-      for(let i = 0 ; i < 1000000; i++){
+      for (let i = 0; i < 1000000; i++) {
         const user = await new userTest({
-          name: `${req.body.name + i}`
-        })
-        await user.save()
+          name: `${req.body.name + i}`,
+        });
+        await user.save();
       }
-      return handleSuccess(
-        res,
-        "Create successfully"
-      );
+      return handleSuccess(res, "Create successfully");
     } catch (err) {
       return handleError(err);
     }
   },
+  
+  uploadImage: async (req, res) => {
+    debugger
+  }
 };
 
 module.exports = productController;

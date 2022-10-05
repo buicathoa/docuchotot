@@ -37,18 +37,22 @@ const subCategory = new mongoose.Schema(
       ref: "category",
       require: true,
     },
-    multiSubcategory: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "multiSubcategory",
-      },
-    ],
+    // multiSubcategory: [
+    //   {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: "multiSubcategory",
+    //   },
+    // ],
   },
   { timestamps: true }
 );
 
-const multiSubcategory = new mongoose.Schema(
+const brand = new mongoose.Schema(
   {
+    brand_id:{
+      require: true,
+      type: String
+    },
     title: {
       require: true,
       type: String,
@@ -61,10 +65,11 @@ const multiSubcategory = new mongoose.Schema(
       require: true,
       type: String,
     },
-    products: [
+    models: [
       {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "productName",
+        type:  mongoose.Schema.Types.ObjectId,
+        ref: "itemModel",
+        require: true
       },
     ],
     param_url: {
@@ -75,15 +80,28 @@ const multiSubcategory = new mongoose.Schema(
   { timestamps: true }
 );
 
-const productName = new mongoose.Schema(
+const itemModel = new mongoose.Schema(
   {
+    model_id: {
+      require:true,
+      type: String
+    },
     title: {
       require: true,
       type: String,
     },
-    multisub_id: {
-      require: true,
+    brand_id: {
       type: String,
+      ref: "brand",
+      require: true,
+    },
+    category_id: {
+      require: true,
+      type: String
+    },
+    subcategory_id: {
+      require: true,
+      type: String
     },
     param_url: {
         require: true,
@@ -107,11 +125,11 @@ const userTest = new mongoose.Schema({
 // module.exports = mongoose.model("District", districtSchema)
 const categorySchema = mongoose.model("category", category);
 const subCategorySchema = mongoose.model("subCategory", subCategory);
-const multiSubcategorySchema = mongoose.model(
-  "multiSubcategory",
-  multiSubcategory
+const brandSchema = mongoose.model(
+  "brand",
+  brand
 );
-const productNameSchema = mongoose.model("productName", productName);
+const itemModelSchema = mongoose.model("itemModel", itemModel);
 const userTestSchema = mongoose.model("userTest", userTest);
 // const districtSchema = mongoose.model('district', district)
 // const wardSchema = mongoose.model('ward', ward)
@@ -119,7 +137,7 @@ const userTestSchema = mongoose.model("userTest", userTest);
 module.exports = {
   Category: categorySchema,
   subCategory: subCategorySchema,
-  multiSubcategory: multiSubcategorySchema,
-  productName: productNameSchema,
+  brand: brandSchema,
+  itemModel: itemModelSchema,
   userTest: userTestSchema
 };

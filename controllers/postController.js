@@ -19,6 +19,7 @@ const postController = {
         title,
         description,
         price,
+        address_detail,
         province_id,
         district_id,
         ward_id,
@@ -32,7 +33,7 @@ const postController = {
         brand_id,
         category_id,
         subcategory_id,
-        multisubcatgory_id,
+        model_id,
         // brand_id,
         // status,
         // position,
@@ -45,6 +46,7 @@ const postController = {
         title: title,
         description: description,
         price: price,
+        address_detail: address_detail,
         province_id: province_id,
         district_id: district_id,
         ward_id: ward_id,
@@ -52,13 +54,13 @@ const postController = {
         is_give_away: is_give_away,
         position: position,
         is_pinned: is_pinned,
-        images: listFiles,
+        images: images,
         status: status,
         attribute: attribute,
         brand_id: brand_id,
         category_id: category_id,
         subcategory_id: subcategory_id,
-        multisubcategory_id: multisubcatgory_id
+        model_id: model_id
       });
       await newPost.save();
       return handleSuccess(res, newPost, "Create new posts successfully!");

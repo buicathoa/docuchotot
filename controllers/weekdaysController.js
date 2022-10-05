@@ -6,6 +6,7 @@ const bcrypt = require("bcrypt");
 const multer = require("multer");
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const sharp = require("sharp");
+const weekdays = require("../models/weekdays");
 const cloudinary = require("cloudinary").v2;
 // const redis = require('redis')
 // const REDIS_PORT = process.env.PORT || 6379
@@ -54,18 +55,34 @@ const userController = {
     };
     return handleSuccess(res, userResponse, "update successfully!");
   },
-  getAllUser: async (req, res) => {
-    const province = await User.find({})
-    await User.find({})
+  getAllWeekDays: async (req, res) => {
+    await weekdays.find({})
       .then((data) => {
-        return handleSuccess(res, data, "Get list user successfully!");
+        return handleSuccess(res, data, "Get all weekdays successfully!");
       })
       .catch((err) => {
         return handleError(res, {
           code: 400,
-          message: "Can't get list all users!",
+          message: "Can't get all weekdays!",
         });
       });
+  },
+  createWeekDays: async (req, res) => {
+    try{
+        const {weekdays_item} = req.body
+        const newWeekdays = await new weekdays({
+            weekdays_item: weekdays_item,
+          });
+          await newWeekdays.save();
+
+      return handleSuccess(
+        res,
+        newWeekdays,
+        "Create new weekdays successfully!"
+      );
+    } catch(err){
+        return handleError(err);
+    }
   },
   getUser: async (req, res) => {
     try{      

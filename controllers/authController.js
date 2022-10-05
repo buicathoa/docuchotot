@@ -82,9 +82,9 @@ const authController = {
     const salt = await bcrypt.genSalt(10);
     const hashed = await bcrypt.hash(req.body.password, salt);
     const user = await User.findOne({ username: req.body.username });
-    const userResponse = {...user._doc};
-    delete userResponse.password
     if (user) {
+      const userResponse = {...user._doc};
+      delete userResponse.password
       if (!bcrypt.compareSync(req.body.password, user.password)) {
         return res.status(400).json("Invalid email or password");
       } else {

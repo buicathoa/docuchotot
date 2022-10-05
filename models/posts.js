@@ -15,7 +15,7 @@ const postsSchema = new mongoose.Schema(
     },
     price: {
       require: true,
-      type: Number,
+      type: String,
     },
     province_id: {
       require: true,
@@ -28,6 +28,10 @@ const postsSchema = new mongoose.Schema(
     ward_id: {
       require: true,
       type: String,
+    },
+    address_detail: {
+      require: true,
+      type: String
     },
     seller_type: {
       require: true,
@@ -58,11 +62,11 @@ const postsSchema = new mongoose.Schema(
       require: true,
       type: String,
     },
-    multisubcatgory_id: {
+    brand_id: {
       require: true,
       type: String,
     },
-    brand_id: {
+    model_id: {
       require: true,
       type: String,
     },

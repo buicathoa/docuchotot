@@ -17,15 +17,12 @@ const { Category } = require("../models/product");
 const filterController = {
   createNewFilter: async (req, res) => {
     try {
-      const { api_getdata, key, control_type, label, is_required, default_value, subCategory_id, droplist_value_option, width } = req.body;
+      const { keyEN, keyVI, is_required, subCategory_id, droplist_value_option, width } = req.body;
       const newFilter = await new filter({
-        api_getdata: api_getdata,
-        key: key,
-        control_type: control_type,
-        label: label,
+        keyEN: keyEN,
+        keyVI: keyVI,
         is_required: is_required,
         subCategory_id: subCategory_id,
-        default_value: default_value,
         droplist_value_option: droplist_value_option,
         width: width
       });

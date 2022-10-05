@@ -6,9 +6,7 @@ const { uploadImage } = require('../helper');
 
 const router = require("express").Router();
 
-router.post("/create", uploadImage('posts').array("images"), async (req, res) => {
-    postController.createNewPosts(req, res)
-})
+router.post("/create", postController.createNewPosts)
 router.post("/get-post-by-id", postController.getPostsByUserId)
 router.post("/get-all", postController.getAllPosts)
 
